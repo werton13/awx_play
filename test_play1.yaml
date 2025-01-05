@@ -1,0 +1,10 @@
+---
+  - hosts: localhost
+    become: false
+    gather_facts: false
+    vars:
+      demokey1: "hello awx"
+    tasks:
+      - name: "show me what you have"
+        debug:
+          msg: "my var: {{ demokey1 }}"
