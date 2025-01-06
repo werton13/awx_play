@@ -1,0 +1,21 @@
+---
+  - hosts: localhost
+    become: false
+    gather_facts: true
+    vars:
+      demokey1: "hi there awx"
+    tasks:
+      - name: "check disk freespace on volumegroups"
+        shell: |
+          df -h | egrep -e "Filesystem|mapper"
+        register: df_out
+        ignore_errors: yes
+        
+      - name: "show me what you have"
+        debug:
+          msg: 
+            - "my var: {{ demokey1 }}"
+            - "{{ ansible_date_time.iso8601 }}"
+            - "{{ ansible_devices.sda.partitions['sda3'].size }}"
+            - "{{ df_out.stdout_lines }}"
+        ignore_errors: yes
