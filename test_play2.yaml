@@ -4,6 +4,7 @@
     gather_facts: true
     vars:
       demokey1: "hi there awx"
+      myvault_secret: "{{ lookup('hashi_vault', 'secret=awx_testproject1/testcrets:username')}}"
     tasks:
       - name: "check disk freespace on volumegroups"
         shell: |
@@ -18,4 +19,5 @@
             - "{{ ansible_date_time.iso8601 }}"
             - "{{ ansible_devices.sda.partitions['sda3'].size }}"
             - "{{ df_out.stdout_lines }}"
+            - "my secret from vault: {{ myvault_secret  }}"
         ignore_errors: yes
