@@ -4,7 +4,7 @@
     gather_facts: true
     vars:
       demokey1: "hi there awx"
-      myvault_secret: "{{ lookup('hashi_vault', 'secret=awx_testproject1/testcrets:username')}}"
+      myvault_secret: "{{ lookup('hashi_vault', '/kv/data/marvel')}}"
     tasks:
 #      - name: "check disk freespace on volumegroups"
 #        shell: |
