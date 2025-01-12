@@ -4,7 +4,7 @@
     gather_facts: true
     vars:
       demokey1: "hi there awx"
-      myvault_secret: "{{ 'community.hashi_vault.hashi_vault', '/kv/data/marvel')}}"
+      myvault_secret: "{{ lookup('community.hashi_vault.hashi_vault', '/kv/data/marvel') }}"
     tasks:
       
       - name: "show me what you have"
