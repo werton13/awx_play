@@ -8,5 +8,5 @@
       - name: "show me what you have"
         debug:
           msg: 
-            - "my ansible username: {{ ansible_user }}"
+            - "my vault secret: {{ myvault_secret }}"
         ignore_errors: yes
