@@ -1,0 +1,12 @@
+---
+  - hosts: localhost
+    become: false
+    gather_facts: true
+
+    tasks:
+      
+      - name: "show me what you have"
+        debug:
+          msg: 
+            - "my ansible username: {{ ansible_user }}"
+        ignore_errors: yes
