@@ -9,4 +9,4 @@
         debug:
           msg: 
             - "my vault secret: {{ myvault_secret }}"
-        ignore_errors: yes
+            - "webhook_payload: {{ webhook_payload }}"
