@@ -5,7 +5,7 @@
     tasks:
       
       - name: "create test inventory in awx"
-        inventory:
+        awx.awx.inventory:
           name: MyAWX-Inventory1
           organization: Default
           controller_host: "{{ ansible_url }}"
