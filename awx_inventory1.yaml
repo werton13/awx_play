@@ -1,0 +1,13 @@
+---
+  - hosts: localhost
+    become: false
+    gather_facts: true
+    tasks:
+      
+      - name: "create test inventory in awx"
+        inventory:
+          name: MyAWX-Inventory1
+          organization: Default
+          controller_host: "{{ ansible_url }}"
+          controller_username: "{{ awx_username }}"
+          controller_password: "{{ awx_password }}"
