@@ -1,0 +1,9 @@
+---
+  - hosts: "{{ node_name }}"
+    become: true
+    gather_facts: true
+    tasks:     
+      - name: "Restart kubelet service on the specified worker node"
+        ansible.builtin.service:
+          name: "{{ svc_name }}"
+          state: restarted
