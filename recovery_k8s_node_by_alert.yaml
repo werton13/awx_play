@@ -23,7 +23,7 @@
             msg:
               - "possible systemd services degraded: kubelet, containerd"
   
-        - name: "get suspect services state"
+        - name: "get systemd services state - possible causing  node unready state"
           ansible.builtin.systemd:
             name: "{{ item }}"
           loop:
@@ -31,17 +31,36 @@
             - kubelet
           register: svc_status
 
-        - name: "display suspect services state"
+        - name: "show systemd service name if it is inactive"
           debug:
             msg:
-              - "systemd services kubelet, containerd state:"
-              - "{{ svc_status }}"
-  
+              - "failed service detected:" 
+              - "{{ item.name }}"
+          when: item.status.ActiveState == "inactive"
+          loop:  "{{ svc_status.results }}"
+
+        - name: "trying to restart systemd service if it is inactive"
+          ansible.builtin.service:
+            name: "{{ item.name }}"
+            state: restarted
+          when: item.status.ActiveState == "inactive"
+          loop:  "{{ svc_status.results }}"
+
+        - name: "get systemd services state  after restart"
+          ansible.builtin.systemd:
+            name: "{{ item }}"
+          loop:
+            - containerd
+            - kubelet
+          register: svc_postrestart_status
+
+        - name: "show systemd service state after restarting"
+          debug:
+            msg:
+              - "service state:" 
+              - "{{ item.name }}: {{ item.status.ActiveState }}"
+          loop:  "{{ svc_postrestart_status.results }}"
+
         when: alert_name is search("KubernetesNodeReady")
   
 
-#        
-#      - name: "Restart kubelet service on the specified worker node"
-#        ansible.builtin.service:
-#          name: "{{ svc_name }}"
-#          state: restarted
