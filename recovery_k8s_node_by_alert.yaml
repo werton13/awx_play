@@ -1,0 +1,47 @@
+---
+# get values from awx_webhook_payload 
+# awx_webhook_payload.alerts[0].labels.node - will point to node on which alert firing 
+# awx_webhook_payload.alerts[0].annotations.description - will point to an alert description
+#  - will point an alert start time 
+  - hosts: "{{ node_name }}"
+    become: true
+    gather_facts: true
+    vars:
+      alert_start: "{{ awx_webhook_payload.alerts[0].startsAt }}"
+      alert_descr: "{{ awx_webhook_payload.alerts[0].annotations.description }}"
+      alert_name: "{{ awx_webhook_payload.alerts[0].labels.alertname }}"
+    tasks:
+      - name: "write alert debug info"
+        debug:
+          msg:
+            - "{{ alert_name }}"
+            - "{{ alert_start }}"
+            - "{{ alert_descr }}"      
+      - block:
+        - name: "get possible reasons for an alert"
+          debug:
+            msg:
+              - "possible systemd services degraded: kubelet, containerd"
+  
+        - name: "get suspect services state"
+          ansible.builtin.systemd:
+            name: "{{ item }}"
+          loop:
+            - containerd
+            - kubelet
+          register: svc_status
+
+        - name: "display suspect services state"
+          debug:
+            msg:
+              - "systemd services kubelet, containerd state:"
+              - "{{ svc_status }}"
+  
+        when: alert_name is search("KubernetesNodeReady")
+  
+
+#        
+#      - name: "Restart kubelet service on the specified worker node"
+#        ansible.builtin.service:
+#          name: "{{ svc_name }}"
+#          state: restarted
